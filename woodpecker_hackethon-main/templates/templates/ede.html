@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT App</title>
+    
+</head>
+<script>
+     document.addEventListener('DOMContentLoaded', function() {
+            var selectElement = document.getElementById('mySelect');
+
+            // Fetch options from Flask endpoint
+            fetch('/get_options')
+                .then(response => response.json())
+                .then(data => {
+                    // Populate options in select element
+                    data.forEach(option => {
+                        var optionElement = document.createElement('option');
+                        optionElement.value = option.text;
+                        optionElement.textContent = option.text;
+                        selectElement.appendChild(optionElement);
+                        // Fetch options from Flask endpoint
+            
+                                     
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching options:', error);
+                });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var sendMessageBtn = document.getElementById('sendMessageBtn');
+            var messageInput = document.getElementById('messageInput');
+
+            sendMessageBtn.addEventListener('click', function() {
+                var message = messageInput.value;
+                var messageContainer = document.getElementById('chat12');
+                    var messageElement = document.createElement('div');
+                    
+            // Apply styles using the style property
+            messageElement.style.paddingLeft = '10px';
+            messageElement.style.padding='14px'
+            messageElement.style.backgroundColor = 'white';
+            messageElement.style.marginBottom = '10px';
+            messageElement.style.borderRadius='40px';
+            messageElement.align="right"
+            messageElement.style.justifyContent="end-flex"
+            messageElement.style.float="right"
+        
+                    var cleanMessage = message.replace('Received message:', '').trim();
+                    messageElement.textContent = cleanMessage
+                    
+                    messageContainer.appendChild(messageElement);
+
+                    // Clear input field after sending message
+                    messageInput.value = '';
+                    // Handle response as needed
+                    alert("rcrdcrd")
+                    var oi=document.getElementById('mySelect1')
+                    var selectedOption = oi.value;
+            alert('Selected option: ' + selectedOption);
+        alert(selectedOption)
+        var we=message
+                fetch('/send_message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: we ,select:selectedOption})
+                    
+                })
+                .then(response => response.json())
+                .then(data => {
+                    
+                    const table12 = document.createElement('table');
+                    
+                    const container = document.getElementById('chat12');
+                    
+                    
+                    // Create table header
+                    const thead = document.createElement('thead');
+                    const headerRow = document.createElement('tr');
+                    data.columns.forEach(column => {
+                        const th = document.createElement('th');
+                        th.textContent = column;
+                        th.style.fontSize='8px'
+                        headerRow.appendChild(th);
+                    });
+                    thead.appendChild(headerRow);
+                    thead.style.alignItems="first baseline";
+                    thead.style.alignItems="first baseline"
+                    table12.appendChild(thead);
+                    
+                    // Create table body
+                    const tbody = document.createElement('tbody');
+                    data.rows.forEach(row => {
+                        const tr = document.createElement('tr');
+                        row.forEach(cell => {
+                            const td = document.createElement('td');
+                            td.textContent = cell;
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });
+                    table12.appendChild(tbody);
+                    table12.style.alignSelf = "flex-start";
+                    table12.style.backgroundColor='#ff00ea'
+                    container.appendChild(table12)
+                    container.alignItems="end"
+                    container.style.alignItems='end'
+                    
+                    
+
+});
+                })
+                .catch(error => {
+                    console.error('Error sending message:', error);
+                });
+            });
+        
+
+</script>
+<body>
+    <div class="App">
+        <div class="sideBar">
+            <div class="upperSide">
+                <div class="upperSideTop">
+                
+                    <span class="brand">CHATBOT</span>
+                </div>
+                <button class="midbtn" onclick="// Reload the current page
+                window.location.reload();
+                ">
+                    
+                    New Chat
+                </button>
+                <div id="selectContainer">
+                    <label for="mySelect">Select a database:<br></label>
+                    <select id="mySelect">
+                        <option>select option</option>
+                        <!-- Options will be populated dynamically here -->
+                    </select>
+                </div>
+                <div id="selectContainer1" style="width:200px;">
+                    <label for="mySelect1">Select a table:<br></label>
+        
+                    <select id="mySelect1">
+                        <!-- Options will be populated dynamically here -->
+                         <option>select option</option>
+                    </select>
+                </div>
+               
+            </div>
+            <div id="output" style="font-size:10px;">
+                <!-- Data will be displayed here -->
+            </div>
+            
+        </div>
+        <div class="main" >
+            <div class="chat bot" style="flex-direction: column;height: 600px; display: flex;align-items: end;" id="chat12"style="overflow: auto;" >
+               
+                    
+                        
+                    
+                
+            </div>
+            
+            
+            <div class="chatFooter">
+                <div class="inp" >
+                    <input type="text" id="messageInput" placeholder="Send a Message">
+                    <button id="sendMessageBtn" >Send</button><button id="startRecognition">mike</button>
+                </div>
+            </div>
+            
+            </div>
+            
+            
+            
+        </div>
+    </div>
+</body>
+<script>
+const selectElement = document.getElementById('mySelect');
+
+        // Add event listener for 'change' event
+        selectElement.addEventListener('change', function() {
+            // Get the selected option value
+            const selectedValue = selectElement.value;
+            alert(selectedValue)
+
+            // Send AJAX request to Python server
+            fetch('/get_options', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ selectedValue: selectedValue })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the result in HTML
+                const selectElement1 = document.getElementById('mySelect1');
+                selectElement1.innerHTML="";
+                alert(data.selectElement)
+                const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Select an option';
+    placeholderOption.selected = true;
+    placeholderOption.disabled = true;
+    selectElement1.appendChild(placeholderOption);
+                data.selectedValue.forEach(option => {
+                        var optionElement = document.createElement('option');
+                        optionElement.value = option.text;
+                        optionElement.textContent = option.text;
+                        selectElement1.appendChild(optionElement);
+                        // Fetch options from Flask endpoint
+            
+                                     
+                    });
+                    
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</html>
+<script>
+    const selectElement1 = document.getElementById('mySelect1');
+
+// Add event listener for 'change' event
+ selectElement1.addEventListener('change', function() {
+    // Get the selected option value
+    const selectedValue1 = selectElement1.value;
+    alert(selectedValue1)
+    fetch('/trtt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ selectedValue: selectedValue1})
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the result in HTML
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML=''
+                const p = document.createElement('p');
+                p.textContent = "COLUMN NAME:";
+    outputDiv.appendChild(p);
+// Append each value as a new paragraph
+data.forEach(value => {
+    const p = document.createElement('p');
+    p.textContent = value;
+    outputDiv.appendChild(p);
+});
+                                     
+                    });
+                    
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        
+    function asa() {
+        // Fetch data from Flask endpoint
+        fetch('/s')
+            .then(response => response.json())
+            .then(data => {
+                // Process data and create table dynamically
+                
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+</script>
+<style>
+    
+
+</style>
+<script>
+    // Check if the browser supports speech recognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert("Speech recognition is not supported in this browser.");
+    } else {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';  // Set the language for recognition
+        recognition.interimResults = true; // Get interim results while speech is ongoing
+        recognition.continuous = true; // Keep recognition active until stopped
+        
+        // Get the input field and button elements
+        const messageInput = document.getElementById('messageInput');
+        const startRecognitionButton = document.getElementById('startRecognition');
+        
+        // Variable to hold the final transcript
+        let finalTranscript = '';
+
+        // Event handler for when speech is recognized
+        recognition.onresult = function(event) {
+            let interimTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const result = event.results[i];
+                if (result.isFinal) {
+                    const transcript = result[0].transcript;
+                    // Check for the command to stop
+                    if (transcript.toLowerCase().includes('stop')) {
+                        recognition.stop();
+                        messageInput.value=messageInput.value.replace("stop","")
+                        return;
+                    }
+                    finalTranscript += transcript + ' ';
+                } else {
+                    interimTranscript += result[0].transcript;
+                }
+            }
+            // Update input field with final and interim results combined
+            messageInput.value = finalTranscript + interimTranscript;
+        };
+        
+        // Start recognition when the button is clicked
+        startRecognitionButton.addEventListener('click', function() {
+            finalTranscript = ''; // Reset final transcript
+            messageInput.value = ''; // Clear the input field
+            recognition.start();
+        });
+        
+        // Handle errors
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error detected:', event.error);
+        };
+        
+        // Handle recognition end
+        recognition.onend = function() {
+            console.log('Speech recognition service disconnected');
+        };
+    }
+</script>
+<style>
+     .App {
+            display: flex;
+            height: 100vh;
+            background: linear-gradient(45deg, black, darkviolet, violet);
+            
+        }
+        .sideBar {
+            background-color: #ffffff9f;
+            border-right: 2px solid rgb(49, 26, 57);
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .upperSide {
+            margin-bottom: 20px;
+        }
+        .upperSideTop {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .brand {
+            font-size: x-large;
+            font-weight: bolder;
+            color: #452146;
+        }
+        .midbtn {
+            background-color: #830e85;
+            width: 200px;
+            align-items: center;
+            color: hsl(0, 0%, 100%);
+            font-weight: bold;
+            font-size: large;
+            border: none;
+            padding: 10px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+        }
+        .midbtn:hover {
+            background-color: #5100b36d;
+        }
+        .addbtn {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .query {
+            background-color: transparent;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .query img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .lowerSide {
+            display: flex;
+            flex-direction: column;
+            margin-top: auto;
+        }
+        .listItems {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .listitemsImg {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .logoutBtn, .profileBtn {
+            background-color: #830e85;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            width: 100%;
+        }
+        .logoutBtn:hover, .profileBtn:hover {
+            background-color: #5100b36d;
+        }
+        .main {
+           
+            display: flex;
+            flex-direction: column;
+        }
+        .chats {
+            flex: 1;
+            padding: 20px;
+            overflow-y: scroll;
+        }
+        .chat {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .chatImg {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .mySelect1 {
+            width: 250px;
+            height: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .mySelect {
+            width: 250px;
+            height: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .mySelect:hover {
+            border: 2px solid #8400ff;
+        }
+        .mySelect1:hover {
+            border: 2px solid #8400ff;
+        }
+        .txt {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+        .bot .txt {
+            background-color: #28a745;
+        }
+        .chatFooter {
+            padding: 20px;
+            background-color: #ffffffa1;
+            border-top: 1px solid rgb(100, 100, 100);
+        }
+        .inp {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .messageInput {
+            box-shadow: 0.5px 6px 17px 0.75px rgba(178, 15, 243, 0.738);
+        }
+        .inp input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 20px;
+            font-size: 16px;
+        }
+        .inp > input:hover {
+            border: 1px solid #8400ff;
+        }
+        .sendMessageBtn {
+            color: #fff;
+            border: none;
+            padding: 10px;
+            background-color: #d216d6;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 80px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .send img {
+            width: 20px;
+            height: 20px;
+        }
+        .sendMessageBtn:hover {
+            background-color: #e418c66d;
+        }
+        .chatFooter p {
+            font-size: 14px;
+            color: #777;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, black, darkviolet, violet);
+        }
+        .App {
+            display: flex;
+            height: 100vh;
+            background: linear-gradient(45deg, black, darkviolet, violet);
+        }
+        .sideBar {
+            background-color: #ffffff9f;
+            border-right: 2px solid rgb(49, 26, 57);
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .upperSide {
+            margin-bottom: 20px;
+        }
+        .upperSideTop {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .brand {
+            font-size: x-large;
+            font-weight: bolder;
+            color: #452146;
+        }
+        .midbtn {
+            background-color: #830e85;
+            width: 200px;
+            align-items: center;
+            color: hsl(0, 0%, 100%);
+            font-weight: bold;
+            font-size: large;
+            border: none;
+            padding: 10px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+        }
+        .midbtn:hover {
+            background-color: #5100b36d;
+        }
+        .addbtn {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .query {
+            background-color: transparent;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .query img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .lowerSide {
+            display: flex;
+            flex-direction: column;
+            margin-top: auto;
+        }
+        .listItems {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .listitemsImg {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .logoutBtn, .profileBtn {
+            background-color: #830e85;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            width: 100%;
+        }
+        .logoutBtn:hover, .profileBtn:hover {
+            background-color: #5100b36d;
+        }
+        .main {
+           
+            display: flex;
+            flex-direction: column;
+        }
+        .chats {
+            flex: 1;
+            padding: 20px;
+            overflow-y: scroll;
+        }
+        .chat {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .chatImg {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .mySelect1 {
+            width: 250px;
+            height: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .mySelect {
+            width: 250px;
+            height: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .mySelect:hover {
+            border: 2px solid #8400ff;
+        }
+        .mySelect1:hover {
+            border: 2px solid #8400ff;
+        }
+        .txt {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+        .bot .txt {
+            background-color: #28a745;
+        }
+        .chatFooter {
+            padding: 20px;
+            background-color: #ffffffa1;
+            border-top: 1px solid rgb(100, 100, 100);
+        }
+        .inp {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .messageInput {
+            box-shadow: 0.5px 6px 17px 0.75px rgba(178, 15, 243, 0.738);
+        }
+        .inp input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 20px;
+            font-size: 16px;
+        }
+        .inp > input:hover {
+            border: 1px solid #8400ff;
+        }
+        .sendMessageBtn {
+            color: #fff;
+            border: none;
+            padding: 10px;
+            background-color: #830e85;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 80px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .send img {
+            width: 20px;
+            height: 20px;
+        }
+        .sendMessageBtn:hover {
+            background-color: #5100b36d;
+        }
+        .chatFooter p {
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
